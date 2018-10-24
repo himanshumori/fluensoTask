@@ -5,13 +5,22 @@ import java.io.IOException
 
 class PlayerUtility private constructor() {
 
+    private lateinit var completeListener:  MediaPlayer.OnCompletionListener
+    private lateinit var errorListener: MediaPlayer.OnErrorListener
+
     init {
         mediaPlayer = MediaPlayer()
     }
 
+    fun setMediaListeners(completeListener: MediaPlayer.OnCompletionListener, errorListener: MediaPlayer.OnErrorListener) {
+
+        this.completeListener= completeListener
+        this.errorListener = errorListener
+    }
+
     companion object {
 
-        private  var playerUtility = PlayerUtility()
+        private var playerUtility = PlayerUtility()
         private lateinit var mediaPlayer: MediaPlayer
 
         @Synchronized
@@ -24,9 +33,9 @@ class PlayerUtility private constructor() {
     fun startPlaying(fileName: String) {
 
         try {
-            if (mediaPlayer.isPlaying) {
-                mediaPlayer.stop()
-            }
+            mediaPlayer = MediaPlayer()
+            mediaPlayer.setOnCompletionListener(completeListener)
+            mediaPlayer.setOnErrorListener(errorListener)
             mediaPlayer.setDataSource(fileName)
             mediaPlayer.prepare()
         } catch (e: IOException) {
@@ -42,15 +51,12 @@ class PlayerUtility private constructor() {
             if (mediaPlayer.isPlaying) {
                 mediaPlayer.stop()
             }
-            // todo release properly
+            mediaPlayer.reset();
+            mediaPlayer.release();
         } catch (e: IOException) {
             e.printStackTrace()
         }
     }
 
-    fun setMediaListeners(completeListener: MediaPlayer.OnCompletionListener, errorListener: MediaPlayer.OnErrorListener) {
 
-        mediaPlayer.setOnCompletionListener(completeListener)
-        mediaPlayer.setOnErrorListener(errorListener)
-    }
 }

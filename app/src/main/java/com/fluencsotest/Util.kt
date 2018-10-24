@@ -31,7 +31,12 @@ class Util {
             }
         }
 
-        fun generateRandomFileName(): String {
+        fun generateRandomRAWFileName(): String {
+
+            return (defaultDir + "rec_" + System.currentTimeMillis() + ".raw")
+        }
+
+        fun generateRandomWAVFileName(): String {
 
             return (defaultDir + "rec_" + System.currentTimeMillis() + ".wav")
         }
@@ -40,13 +45,24 @@ class Util {
             //TODO delete files when there is no use of it
         }
 
-        fun checkPermission(applicationContext : Context): Boolean {
+        fun checkPermission(applicationContext: Context): Boolean {
 
             val storageStatus = ContextCompat.checkSelfPermission(applicationContext,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)
             val micStatus = ContextCompat.checkSelfPermission(applicationContext,
                     Manifest.permission.RECORD_AUDIO)
             return storageStatus == PackageManager.PERMISSION_GRANTED && micStatus == PackageManager.PERMISSION_GRANTED
+        }
+
+        fun deleteFile(fileName: String) {
+            val file = File(fileName)
+            if (file.exists()) {
+                try {
+                    file.delete()
+                } catch (ex: Exception) {
+                    ex.printStackTrace()
+                }
+            }
         }
     }
 }

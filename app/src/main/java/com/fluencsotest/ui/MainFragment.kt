@@ -16,13 +16,7 @@ import kotlinx.android.synthetic.main.main_fragment.*
 class MainFragment : Fragment(), View.OnClickListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 
     private var CURRENT_MODE: Int = Util.IDLE_MODE // set it default
-    private val recorderUtility: RecorderUtility = RecorderUtility.getInstance()
-    private val playerUtility: PlayerUtility = PlayerUtility.getInstance()
-    private lateinit var audioFilePath: String
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private var audioFilePath = Util.generateRandomWAVFileName()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.main_fragment, container, false)
@@ -42,7 +36,7 @@ class MainFragment : Fragment(), View.OnClickListener, MediaPlayer.OnCompletionL
 
     private fun prepareListeners() {
 
-        playerUtility.setMediaListeners(this, this)
+        PlayerUtility.getInstance().setMediaListeners(this, this)
     }
 
     private fun setUIMode() {
@@ -107,33 +101,34 @@ class MainFragment : Fragment(), View.OnClickListener, MediaPlayer.OnCompletionL
     private fun stopPlaying() {
 
         CURRENT_MODE = Util.IDLE_MODE
-        playerUtility.stopPlaying()
+        PlayerUtility.getInstance().stopPlaying()
     }
 
     private fun playRecordedFile() {
         CURRENT_MODE = Util.PLAYING_MODE
-        playerUtility.startPlaying(audioFilePath)
+        PlayerUtility.getInstance().startPlaying(audioFilePath)
     }
 
     private fun stopRecording() {
         CURRENT_MODE = Util.RECORDED_MODE
-        recorderUtility.stopRecording()
+        RecorderUtility.getInstance().stopRecording()
     }
 
     private fun startRecording() {
-        audioFilePath = Util.generateRandomFileName()
         CURRENT_MODE = Util.RECORDING_MODE
-        recorderUtility.startRecording(audioFilePath)
+        RecorderUtility.getInstance().startRecording(audioFilePath)
     }
 
     override fun onCompletion(mp: MediaPlayer?) {
         CURRENT_MODE = Util.IDLE_MODE
         setUIMode()
+        Util.deleteFile(audioFilePath)
     }
 
     override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
         CURRENT_MODE = Util.IDLE_MODE
         setUIMode()
         return true
+        Util.deleteFile(audioFilePath)
     }
 }
