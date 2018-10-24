@@ -1,0 +1,11 @@
+<resources>
+
+    <string name="app_name">FluencsoTest</string>
+    <string name="record">Record</string>
+    <string name="stop">Stop</string>
+    <string name="play">Play</string>
+    <string name="finish">Finish</string>
+    <string name="permission_granted">Permission Granted</string>
+    <string name="permission_denied">Permission Denied</string>
+
+</resources>
