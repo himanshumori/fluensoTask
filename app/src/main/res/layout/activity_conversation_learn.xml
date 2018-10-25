@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context=".ui.activities.MainActivity">
 
     <fragment
         android:id="@+id/my_fragment"
-        class="com.fluencsotest.ui.fragments.MainFragment"
+        class="com.fluencsotest.ui.fragments.ConversationLearnFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

@@ -1,7 +1,8 @@
-package com.fluencsotest.ui
+package com.fluencsotest.ui.activities
 
 import android.Manifest.permission.RECORD_AUDIO
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
@@ -22,6 +23,8 @@ class MainActivity : AppCompatActivity() {
             requestPermission()
         }else{
             Util.prepareDefaultDirectory()
+            startActivity(Intent(this, ConversationLearnActivity::class.java))
+            finish()
         }
     }
 
@@ -45,9 +48,12 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this, R.string.permission_granted,
                                 Toast.LENGTH_LONG).show();
                         Util.prepareDefaultDirectory()
-                    } else {
+                        startActivity(Intent(this, ConversationLearnActivity::class.java))
+                     } else {
                         Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_LONG).show();
                     }
+
+                    finish()
                 }
         }
     }

@@ -1,4 +1,4 @@
-package com.fluencsotest.ui
+package com.fluencsotest.ui.fragments
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -11,7 +11,7 @@ import com.fluencsotest.R
 import com.fluencsotest.Util
 import com.fluencsotest.speechhandler.PlayerUtility
 import com.fluencsotest.speechhandler.RecorderUtility
-import kotlinx.android.synthetic.main.main_fragment.*
+import kotlinx.android.synthetic.main.fragment_main.*
 
 class MainFragment : Fragment(), View.OnClickListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 
@@ -19,7 +19,7 @@ class MainFragment : Fragment(), View.OnClickListener, MediaPlayer.OnCompletionL
     private var audioFilePath = Util.generateRandomWAVFileName()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.main_fragment, container, false)
+        return inflater?.inflate(R.layout.fragment_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

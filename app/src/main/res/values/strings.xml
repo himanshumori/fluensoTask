@@ -8,4 +8,8 @@
     <string name="permission_granted">Permission Granted</string>
     <string name="permission_denied">Permission Denied</string>
 
+    <string name="tap_to_speak">Tap to Speak</string>
+    <string name="analysing">Analysing..</string>
+    <string name="re_speak">Re-Speak</string>
+
 </resources>

@@ -11,6 +11,9 @@ class Util {
 
     companion object {
 
+        const val PERSONA: Int = 1
+        const val USER: Int = 2
+
         const val IDLE_MODE: Int = 1
         const val RECORDING_MODE: Int = 2
         const val RECORDED_MODE: Int = 3
@@ -63,6 +66,22 @@ class Util {
                     ex.printStackTrace()
                 }
             }
+        }
+
+        fun getRatingText( rating: Int): String{
+
+            when (rating){
+
+                0 -> return "\uD83D\uDC4E\uD83D\uDC4E\uD83D\uDC4E"
+                1 -> return "\uD83D\uDC4E\uD83D\uDC4E"
+                2 -> return "\uD83D\uDC4E"
+                3 -> return "\uD83D\uDC4F\uD83D\uDC4F"
+                4 -> return "\uD83D\uDC4F\uD83D\uDC4F\uD83D\uDC4F"
+                5 -> return "\uD83D\uDC4F\uD83D\uDC4F\uD83D\uDC4F\uD83D\uDC4F"
+
+            }
+
+            return  "uD83D"
         }
     }
 }
