@@ -1,31 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/voice_graph_rl"
             android:layout_width="match_parent"
             android:layout_height="58dp"
-            android:background="@drawable/persona_gradient">
+            android:background="@drawable/persona_speaking_gradient">
 
-            <RelativeLayout
+            <com.fluencsotest.customui.waveformview.WaveformView
+                android:id="@+id/playbackWaveformView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                app:mode="PLAYBACK"
+                app:waveformColor="#70ffffff"
+                app:waveformFillColor="#70ffffff"
+                app:waveformStrokeThickness="10" />
 
-            </RelativeLayout>
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:indeterminate="false"
+                android:maxHeight="58dp"
+                android:minHeight="58dp"
+                android:progress="0"
+                android:progressDrawable="@drawable/blurr_progress" />
 
             <ImageButton
                 android:id="@+id/media_play_ib"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"
+                android:background="@android:color/transparent"
+                android:src="@drawable/playback" />
 
         </RelativeLayout>
 
@@ -38,18 +58,23 @@
                 android:id="@+id/watch_text_ib"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
+                android:layout_centerHorizontal="true"
+                android:layout_margin="15dp"
+                android:background="@drawable/transcribe"
+                android:padding="7dp" />
 
             <TextView
                 android:id="@+id/voice_text_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end"
-                android:padding="16dp"
+                android:layout_margin="16dp"
+                android:fontFamily="@font/montserrat_medium"
+                android:gravity="start"
                 android:textColor="@android:color/black"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                tools:text="I am Having fun in doing this one" />
 
         </RelativeLayout>
-
     </LinearLayout>
+
 </RelativeLayout>

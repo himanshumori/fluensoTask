@@ -6,18 +6,22 @@ import android.content.pm.PackageManager
 import android.os.Environment
 import android.support.v4.content.ContextCompat
 import java.io.File
+import android.util.TypedValue
+import android.util.DisplayMetrics
+
+
 
 class Util {
 
     companion object {
 
-        const val PERSONA: Int = 1
-        const val USER: Int = 2
+        const val PERSONA: Int = 21
+        const val USER: Int = 22
 
-        const val IDLE_MODE: Int = 1
-        const val RECORDING_MODE: Int = 2
-        const val RECORDED_MODE: Int = 3
-        const val PLAYING_MODE: Int = 4
+        const val IDLE_MODE: Int = 31
+        const val RECORDING_MODE: Int = 32
+        const val RECORDED_MODE: Int = 33
+        const val PLAYING_MODE: Int = 34
 
         val defaultDir: String = Environment.getExternalStorageDirectory().absolutePath + "/fluenso/"
 
@@ -72,8 +76,8 @@ class Util {
 
             when (rating){
 
-                0 -> return "\uD83D\uDC4E\uD83D\uDC4E\uD83D\uDC4E"
-                1 -> return "\uD83D\uDC4E\uD83D\uDC4E"
+                0 -> return "\uD83D\uDE4F"
+                1 -> return "\uD83D\uDE4F"
                 2 -> return "\uD83D\uDC4E"
                 3 -> return "\uD83D\uDC4F\uD83D\uDC4F"
                 4 -> return "\uD83D\uDC4F\uD83D\uDC4F\uD83D\uDC4F"
@@ -83,5 +87,12 @@ class Util {
 
             return  "uD83D"
         }
+
+        fun dipToPixels(context: Context, dipValue: Float): Float {
+            val metrics = context.resources.displayMetrics
+            return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics)
+        }
     }
+
+
 }

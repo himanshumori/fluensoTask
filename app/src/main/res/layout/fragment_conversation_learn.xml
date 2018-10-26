@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="#f9f9f9"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/user_voice_rl"
+        android:layout_above="@+id/mic_rl"
         android:layout_alignParentTop="true"
         android:gravity="bottom">
 
@@ -21,57 +23,46 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/user_voice_rl"
+    <LinearLayout
+        android:id="@+id/mic_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
         android:layout_alignParentBottom="true"
-        android:gravity="bottom">
+        android:gravity="bottom"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/mic_rl"
-            android:layout_width="match_parent"
+        <com.fluencsotest.customui.DynamicSineWaveView
+            android:id="@+id/view_sine_wave"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp" />
+
+        <TextView
+            android:id="@+id/mic_status_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:gravity="bottom"
-            android:orientation="vertical">
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="12dp"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="16sp"
+            android:fontFamily="@font/montserrat_medium"
+            tools:text="@string/tap_to_speak" />
 
-            <TextView
-                android:id="@+id/mic_status_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp" />
-
-            <ImageButton
-                android:id="@+id/mic_ib"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/speak_progress_rl"
-            android:layout_width="match_parent"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/mic_ib"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical">
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/mic_button"
+            app:backgroundTint="@android:color/white"
+            app:elevation="6dp"
+            app:pressedTranslationZ="12dp" />
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
-
-            <ImageButton
-                android:id="@+id/stop_ib"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
-
-        </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/dummy_persona_button"

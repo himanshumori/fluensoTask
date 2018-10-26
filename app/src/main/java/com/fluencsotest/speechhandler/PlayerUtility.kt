@@ -2,6 +2,9 @@ package com.fluencsotest.speechhandler
 
 import android.media.MediaPlayer
 import java.io.IOException
+import com.fluencsotest.speechhandler.listeners.MediaProgressListener
+import java.util.*
+
 
 class PlayerUtility private constructor() {
 
@@ -34,7 +37,7 @@ class PlayerUtility private constructor() {
         }
     }
 
-    fun startPlaying(fileName: String) {
+    fun startPlaying(fileName: String): MediaPlayer {
 
         try {
             mediaPlayer = MediaPlayer()
@@ -47,6 +50,7 @@ class PlayerUtility private constructor() {
         }
 
         mediaPlayer.start()
+        return mediaPlayer;
     }
 
     fun stopPlaying() {
@@ -57,10 +61,8 @@ class PlayerUtility private constructor() {
             }
             mediaPlayer.reset();
             mediaPlayer.release();
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
-
-
 }

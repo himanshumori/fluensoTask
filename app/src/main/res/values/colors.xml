@@ -6,5 +6,13 @@
 
     <color name="good_review_color">#6cb433</color>
     <color name="bad_review_color">#ff4d6b</color>
+    <color name="mid_review_color">#ffa208</color>
+
+    <color name="default_waveform">#178b51</color>
+    <color name="default_waveformFill">#80FFC0</color>
+    <color name="default_playback_indicator">#ffff66</color>
+    <color name="default_timecode">#00000000</color>
+    <color name="default_background">#00000000</color>
+    <color name="app_theme_blue">#3023ae</color>
 
 </resources>

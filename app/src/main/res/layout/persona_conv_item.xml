@@ -1,11 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="258dp"
-    android:layout_height="match_parent"
-    android:layout_marginStart="22dp"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="12dp"
+    android:background="@android:color/transparent">
 
-    <!--TODO move all above static data to resources dp, sp, strings .. xmls-->
-    <include layout="@layout/genric_conv_item" />
+    <ImageView
+        android:id="@+id/persona_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:src="@drawable/persona_icon" />
 
-</LinearLayout>
+    <RelativeLayout
+        android:layout_width="258dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/persona_iv"
+        android:layout_marginTop="18dp"
+        android:layout_gravity="left"
+        android:layout_toEndOf="@id/id_sender"
+        android:background="@drawable/conv_card">
+
+        <include layout="@layout/genric_conv_item" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/id_sender"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="18dp"
+        android:layout_below="@id/persona_iv"
+        android:layout_marginTop="40dp"
+        android:background="@android:color/transparent"
+        android:rotation="270"
+        android:src="@drawable/left_triangle" />
+
+</RelativeLayout>

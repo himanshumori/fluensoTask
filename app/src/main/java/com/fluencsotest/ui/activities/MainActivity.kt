@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
                                 Toast.LENGTH_LONG).show();
                         Util.prepareDefaultDirectory()
                         startActivity(Intent(this, ConversationLearnActivity::class.java))
+                        finish()
                      } else {
                         Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_LONG).show();
                     }

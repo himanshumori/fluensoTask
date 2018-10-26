@@ -1,45 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="258dp"
-    android:layout_height="match_parent"
-    android:layout_marginStart="22dp"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="12dp"
+    android:background="@android:color/transparent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/voice_feedback_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/voice_feedback_rating_tv"
-            android:ellipsize="end"
-            android:gravity="end"
-            android:padding="16dp"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/voice_feedback_rating_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:gravity="end"
-            android:padding="16dp"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
-
-    </RelativeLayout>
-
-    <include layout="@layout/genric_conv_item" />
-
-    <Button
-        android:id="@+id/respeak_ib"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="258dp"
         android:layout_height="wrap_content"
-        android:text="@string/re_speak"
-        android:padding="10dp" />
+        android:layout_gravity="right"
+        android:layout_toLeftOf="@id/id_sender"
+        android:layout_marginEnd="-1dp"
+        android:background="@drawable/conv_card"
+        android:gravity="right"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:gravity="right">
+
+            <TextView
+                android:id="@+id/voice_feedback_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/voice_data_rl"
+                android:layout_margin="16dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/montserrat_medium"
+                android:gravity="left"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tools:text="good job" />
+
+            <TextView
+                android:id="@+id/voice_feedback_rating_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_margin="16dp"
+                android:fontFamily="@font/montserrat_medium"
+                android:gravity="end"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tools:text="👏" />
+
+            <RelativeLayout
+                android:id="@+id/voice_data_rl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/voice_feedback_tv"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true">
+
+                <include layout="@layout/genric_conv_item" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/respeak_ib"
+            style="@android:style/Widget.Material.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_margin="10dp"
+            android:background="@drawable/good_button_background"
+            android:fontFamily="@font/montserrat_medium"
+            android:text="@string/re_speak"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/id_sender"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="73dp"
+        android:background="@android:color/transparent"
+        android:rotation="90"
+        android:src="@drawable/left_triangle" />
+
+</RelativeLayout>

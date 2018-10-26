@@ -84,7 +84,6 @@ class RecorderUtility {
             super.onPreExecute()
 
             // clean old data.. as of now not required further
-            Util.deleteFile(outputFileName)
         }
 
         override fun doInBackground(vararg params: String?): String {

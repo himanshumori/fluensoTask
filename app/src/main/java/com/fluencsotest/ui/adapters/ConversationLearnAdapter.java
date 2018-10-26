@@ -9,33 +9,47 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.fluencsotest.R;
 import com.fluencsotest.Util;
+import com.fluencsotest.customui.waveformview.PlaybackThread;
+import com.fluencsotest.customui.waveformview.WaveformView;
 import com.fluencsotest.models.ConvEntityItem;
 import com.fluencsotest.models.ConversationItem;
 import com.fluencsotest.models.PersonaConvITem;
 import com.fluencsotest.models.UserConvItem;
 import com.fluencsotest.speechhandler.PlayerUtility;
+import com.fluencsotest.speechhandler.listeners.MediaProgressListener;
+import com.fluencsotest.speechhandler.listeners.PersonaSpeaksListener;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class ConversationLearnAdapter extends RecyclerView.Adapter<ConversationLearnAdapter.MyViewHolder> implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 
     private ArrayList<ConversationItem> conversationItems;
+    private PersonaSpeaksListener speaksListener;
     private Handler handler = new Handler();
 
     // states of conversation
     // Persona
-    private int P_SPEAKING = 1;
-    private int P_SPOKEN = 2;
+    public static int P_SPEAKING = 1;
+    public static int P_SPOKEN = 2;
 
-    private int currentPlayerPosition;
+    private int currentPlayerPosition = -1;
 
-    public ConversationLearnAdapter(ArrayList<ConversationItem> conversationItems) {
+    public ConversationLearnAdapter(ArrayList<ConversationItem> conversationItems, PersonaSpeaksListener speaksListener) {
         this.conversationItems = conversationItems;
+        this.speaksListener = speaksListener;
         PlayerUtility.Companion.getInstance().setMediaListeners(this, this);
     }
 
@@ -73,7 +87,7 @@ public class ConversationLearnAdapter extends RecyclerView.Adapter<ConversationL
         return conversationItems.size();
     }
 
-    private void setViewStates(ConversationLearnAdapter.MyViewHolder holder, final int position) {
+    private void setViewStates(final ConversationLearnAdapter.MyViewHolder holder, final int position) {
 
         if (getItemViewType(position) == Util.PERSONA) {
 
@@ -83,6 +97,13 @@ public class ConversationLearnAdapter extends RecyclerView.Adapter<ConversationL
 
                 holder.voice_text_rl.setVisibility(View.GONE);
                 holder.media_play_ib.setVisibility(View.GONE);
+                playThisFile(personaConvITem.getVoiceFilePath(), position, holder.progressBar);
+                currentPlayerPosition = position;
+                speaksListener.onPersonaStatusChange(P_SPEAKING);
+                holder.voice_graph_rl.setBackgroundResource(R.drawable.persona_speaking_gradient);
+
+                personaConvITem.setConversationState(P_SPOKEN);
+                // above will be notified after completion
 
             } else if (personaConvITem.getConversationState() == P_SPOKEN) {
 
@@ -95,6 +116,9 @@ public class ConversationLearnAdapter extends RecyclerView.Adapter<ConversationL
                 } else {
                     holder.media_play_ib.setImageResource(R.drawable.ic_launcher_background);
                 }
+
+                holder.voice_graph_rl.setBackgroundResource(R.drawable.persona_spoken_gradient);
+                speaksListener.onPersonaStatusChange(P_SPOKEN);
             }
 
             holder.voice_text_tv.setText(personaConvITem.getVoiceText());
@@ -111,8 +135,6 @@ public class ConversationLearnAdapter extends RecyclerView.Adapter<ConversationL
                 }
             });
 
-            holder.voice_graph_rl.setBackgroundResource(R.drawable.persona_gradient);
-
         } else if (getItemViewType(position) == Util.USER) {
 
             UserConvItem userConvItem = conversationItems.get(position).getUserConvItem();
@@ -120,7 +142,8 @@ public class ConversationLearnAdapter extends RecyclerView.Adapter<ConversationL
             holder.voice_feedback_rating_tv.setText(Util.Companion.getRatingText(userConvItem.getRating()));
             holder.voice_feedback_tv.setText(userConvItem.getFeedBackText());
             holder.voice_text_tv.setText(userConvItem.getVoiceText());
-            holder.voice_text_tv.setVisibility(userConvItem.isShowText() ? View.VISIBLE : View.GONE);
+            holder.voice_text_tv.setVisibility(View.VISIBLE);
+            holder.watch_text_ib.setVisibility(View.GONE);
 
             holder.respeak_ib.setOnClickListener(new View.OnClickListener() {
 
@@ -139,30 +162,82 @@ public class ConversationLearnAdapter extends RecyclerView.Adapter<ConversationL
                 }
             });
 
-            if (userConvItem.getPlayerState() == PlayerUtility.Companion.getPLAYING()) {
+            int buttonBackground, graphBackColor,triangleColor;
 
-                holder.media_play_ib.setImageResource(R.drawable.ic_launcher_background);
+            if (userConvItem.getRating() <= 1) {
 
-            } else {
-
-                holder.media_play_ib.setImageResource(R.drawable.ic_launcher_background);
-
-            }
-
-            int color;
-            if (userConvItem.getRating() <= 2) {
-
-                color = ContextCompat.getColor(holder.voice_graph_rl.getContext(),
+                triangleColor = R.drawable.right_triangle_bad;
+                buttonBackground = R.drawable.bad_button_background;
+                graphBackColor = ContextCompat.getColor(holder.voice_graph_rl.getContext(),
                         R.color.bad_review_color);
+            } else if (userConvItem.getRating() <= 3) {
 
+                triangleColor = R.drawable.right_triangle_mid;
+                buttonBackground = R.drawable.medium_button_background;
+                graphBackColor = ContextCompat.getColor(holder.voice_graph_rl.getContext(),
+                        R.color.mid_review_color);
             } else {
-                color = ContextCompat.getColor(holder.voice_graph_rl.getContext(),
+
+                graphBackColor = ContextCompat.getColor(holder.voice_graph_rl.getContext(),
                         R.color.good_review_color);
+                triangleColor = R.drawable.right_triangle_green;
+                buttonBackground = R.drawable.good_button_background;
             }
 
-            holder.respeak_ib.setBackgroundColor(color);
-            holder.voice_graph_rl.setBackgroundColor(color);
+            holder.respeak_ib.setBackgroundResource(buttonBackground);
+            holder.voice_graph_rl.setBackgroundColor(graphBackColor);
+            holder.id_sender.setImageResource(triangleColor);
         }
+
+        holder.media_play_ib.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                ConvEntityItem item = conversationItems.get(position).getConvEntityItem();
+
+                if (item.getPlayerState() == PlayerUtility.Companion.getSTOPPED()) {
+
+                    currentPlayerPosition = position;
+                    playThisFile(item.getVoiceFilePath(), position, holder.progressBar);
+                    item.setPlayerState(PlayerUtility.Companion.getPLAYING());
+
+                } else {
+
+                    stopPlaying();
+                    item.setPlayerState(PlayerUtility.Companion.getSTOPPED());
+                }
+
+                notifyItemChanged(position);
+            }
+        });
+
+        if (conversationItems.get(position).getConvEntityItem().getPlayerState() == PlayerUtility.Companion.getPLAYING()) {
+
+            holder.progressBar.setVisibility(View.VISIBLE);
+            holder.media_play_ib.setImageResource(R.drawable.stop_self_speak);
+        } else {
+
+            holder.progressBar.setVisibility(View.GONE);
+            holder.media_play_ib.setImageResource(R.drawable.playback);
+        }
+
+        holder.mPlaybackView.setChannels(1);
+        holder.mPlaybackView.setSampleRate(PlaybackThread.SAMPLE_RATE);
+        try {
+            holder.mPlaybackView.setSamples(getAudioSample(conversationItems.get(position).getConvEntityItem().getVoiceFilePath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private short[] getAudioSample(String path) throws IOException {
+        byte[] data;
+        data = Files.readAllBytes(new File(path).toPath());
+        ShortBuffer sb = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
+        short[] samples = new short[sb.limit()];
+        sb.get(samples);
+        return samples;
     }
 
     // TODO later construct separate viewHolder for Persona and User
@@ -176,7 +251,9 @@ public class ConversationLearnAdapter extends RecyclerView.Adapter<ConversationL
         ImageButton watch_text_ib;
         ImageButton media_play_ib;
         RelativeLayout voice_text_rl, voice_graph_rl;
-
+        ProgressBar progressBar;
+        WaveformView mPlaybackView;
+        ImageView id_sender;
         public MyViewHolder(View v) {
             super(v);
 
@@ -188,37 +265,27 @@ public class ConversationLearnAdapter extends RecyclerView.Adapter<ConversationL
             media_play_ib = v.findViewById(R.id.media_play_ib);
             voice_text_rl = v.findViewById(R.id.voice_text_rl);
             voice_graph_rl = v.findViewById(R.id.voice_graph_rl);
-
-            final int position = getLayoutPosition();
-
-            media_play_ib.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-
-                    ConvEntityItem item = conversationItems.get(position).getConvEntityItem();
-
-                    if (item.getPlayerState() == PlayerUtility.Companion.getSTOPPED()) {
-
-                        currentPlayerPosition = position;
-                        playThisFile(item.getVoiceFilePath());
-                        item.setPlayerState(PlayerUtility.Companion.getPLAYING());
-
-                    } else {
-
-                        stopPlaying();
-                        item.setPlayerState(PlayerUtility.Companion.getSTOPPED());
-                    }
-
-                    notifyItemChanged(position);
-                }
-            });
+            progressBar = v.findViewById(R.id.progressBar);
+            mPlaybackView = v.findViewById(R.id.playbackWaveformView);
+            id_sender = v.findViewById(R.id.id_sender);
         }
     }
 
-    private void playThisFile(String voiceFilePath) {
+    private void playThisFile(String voiceFilePath, final int position, final ProgressBar progressBar) {
 
-        PlayerUtility.Companion.getInstance().startPlaying(voiceFilePath);
+        MediaPlayer mediaPlayer = PlayerUtility.Companion.getInstance().startPlaying(voiceFilePath);
+
+        setProgressUpdates(mediaPlayer.getDuration(), new MediaProgressListener() {
+
+            @Override
+            public void onProgressChanged(int percentage) {
+
+                // TODO this isnt affecting any ui changes
+                if (!(percentage == -1)) {
+                    progressBar.setProgress(percentage);
+                }
+            }
+        });
     }
 
     private void stopPlaying() {
@@ -229,18 +296,57 @@ public class ConversationLearnAdapter extends RecyclerView.Adapter<ConversationL
     @Override
     public void onCompletion(MediaPlayer mp) {
 
-        conversationItems.get(currentPlayerPosition).getConvEntityItem().setPlayerState(PlayerUtility.Companion.getSTOPPED());
+        if (currentPlayerPosition != -1) {
+            conversationItems.get(currentPlayerPosition).getConvEntityItem().setPlayerState(PlayerUtility.Companion.getSTOPPED());
+            notifyItemChanged(currentPlayerPosition);
 
-        // notify
+            if (conversationItems.get(currentPlayerPosition).getItemType() == Util.PERSONA) {
+
+                speaksListener.onPersonaStatusChange(P_SPOKEN);
+            }
+        }
+        mp.reset();
         mp.release();
     }
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
 
-        conversationItems.get(currentPlayerPosition).getConvEntityItem().setPlayerState(PlayerUtility.Companion.getSTOPPED());
-        // notify
+        if (currentPlayerPosition != -1) {
+            conversationItems.get(currentPlayerPosition).getConvEntityItem().setPlayerState(PlayerUtility.Companion.getSTOPPED());
+            notifyItemChanged(currentPlayerPosition);
+        }
 
         return true;
     }
+
+    private float mediaDurationUpdater = 0;
+
+    void setProgressUpdates(final int duration, final MediaProgressListener mediaProgressListener) {
+
+        final int amoungToupdate = duration / 100;
+        mediaDurationUpdater = 0;
+
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+
+                if (mediaDurationUpdater <= duration) {
+
+                    mediaDurationUpdater = mediaDurationUpdater + duration / 100f;
+
+                    int percentage = (int) ((mediaDurationUpdater / duration) * 100);
+
+                    mediaProgressListener.onProgressChanged(percentage);
+
+                    handler.postDelayed(this, amoungToupdate);
+                } else {
+
+                    mediaProgressListener.onProgressChanged(-1);
+                }
+            }
+        };
+        handler.postDelayed(runnable, amoungToupdate);
+    }
+
 }
